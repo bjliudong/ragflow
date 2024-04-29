@@ -66,6 +66,15 @@ def get_rag_python_directory(*args):
     return get_rag_directory("python", *args)
 
 
+def get_home_cache_dir():
+    dir = os.path.join(os.path.expanduser('~'), ".raglow")
+    try:
+        os.mkdir(dir)
+    except OSError as error:
+        pass
+    return dir
+
+
 @cached(cache=LRUCache(maxsize=10))
 def load_json_conf(conf_path):
     if os.path.isabs(conf_path):
@@ -155,7 +164,9 @@ def filename_type(filename):
         return FileType.AURAL.value
 
     if re.match(r".*\.(jpg|jpeg|png|tif|gif|pcx|tga|exif|fpx|svg|psd|cdr|pcd|dxf|ufo|eps|ai|raw|WMF|webp|avif|apng|icon|ico|mpg|mpeg|avi|rm|rmvb|mov|wmv|asf|dat|asx|wvx|mpe|mpa|mp4)$", filename):
-        return FileType.VISUAL
+        return FileType.VISUAL.value
+
+    return FileType.OTHER.value
 
 
 def thumbnail(filename, blob):
